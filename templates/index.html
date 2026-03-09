@@ -16,14 +16,35 @@
         <header class="header">
             <h1>My Tasks</h1>
         </header>
-        <form id="task-form" class="task-form">
+        <form method="POST" action="/add" id="task-form" class="task-form">
             <input
                 type="text"
+                name="title"
                 id="task-input"
                 placeholder="Add a new task"
                 required
             />
+            <button type="submit">Add</button>
         </form>
+
+        <ul id="task-list" class="task-list">
+
+            {% for task in tasks %}
+
+            <li class="task-item">
+                <label>
+                    <input type="checkbox"/>
+                    <span>{{ task[1] }}</span>
+                </label>
+                <button class="delete-btn">X</button>
+            </li>
+
+            {% endfor %}
+
+        </ul>
+
+        <script src="{{url_for('static', filename='js/main.js')}}"></script>
+
     </div>
 </body>
 </html>
