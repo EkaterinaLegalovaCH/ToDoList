@@ -29,6 +29,12 @@ def add_task(title):
         conn.execute("INSERT INTO tasks (title) VALUES (?)", (title,))
 
 
+def delete_task(task_id):
+    with sqlite3.connect(DATABASE) as conn:
+        conn.execute("DELETE FROM tasks WHERE id = ?", (task_id,))
+
+
+
 @app.route("/")
 def index():
     tasks = get_tasks()
@@ -41,6 +47,11 @@ def add():
     if title:
         add_task(title)
 
+    return redirect("/")
+
+@app.route("/delete/<int:task_id>", methods=["POST"])
+def delete(task_id):
+    delete_task(task_id)
     return redirect("/")
 
 if __name__ == "__main__":
