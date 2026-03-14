@@ -33,6 +33,13 @@ def delete_task(task_id):
     with sqlite3.connect(DATABASE) as conn:
         conn.execute("DELETE FROM tasks WHERE id = ?", (task_id,))
 
+def toggle_task(task_id):
+    with sqlite3.connect(DATABASE) as conn:
+        conn.execute("""
+            UPDATE tasks
+            SET completed = NOT completed
+            WHERE id = ?
+        """, (task_id,))
 
 
 @app.route("/")
@@ -52,6 +59,11 @@ def add():
 @app.route("/delete/<int:task_id>", methods=["POST"])
 def delete(task_id):
     delete_task(task_id)
+    return redirect("/")
+
+@app.route("/update/<int:task_id>", methods=["POST"])
+def update(task_id):
+    toggle_task(task_id)
     return redirect("/")
 
 if __name__ == "__main__":

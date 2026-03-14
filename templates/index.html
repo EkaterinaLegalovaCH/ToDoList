@@ -32,10 +32,17 @@
             {% for task in tasks %}
 
             <li class="task-item">
-                <label>
-                    <input type="checkbox" {% if task[2] %}checked{% endif %}/>
-                    <span>{{ task[1] }}</span>
-                </label>
+                <form method="POST" action="/update/{{ task[0] }}">
+                    <label>
+                    
+                        <input
+                            type="checkbox"
+                            onchange="this.form.submit()"
+                            {% if task[2] %}checked{% endif %}/>
+                        <span>{{ task[1] }}</span>
+
+                    </label>
+                </form>
                 
                 <form method="POST" action="/delete/{{ task[0] }}">
                     <button class="delete-btn">X</button>
