@@ -75,6 +75,9 @@ def home():
 
 @app.route("/register", methods=["GET", "POST"])
 def register():
+    if "user_id" in session:
+        return redirect("/home")
+
     if request.method == "POST":
         username = request.form.get("username")
         password = request.form.get("password")
@@ -92,6 +95,8 @@ def register():
 
 @app.route("/login", methods=["GET", "POST"])
 def login():
+    if "user_id" in session:
+        return redirect("/home")
     if request.method == "POST":
         username = request.form.get("username")
         password = request.form.get("password")
@@ -108,7 +113,7 @@ def login():
 
     return render_template("login.html")
 
-@app.route("/logout")
+@app.route("/logout", methods=["POST"])
 def logout():
     session.clear()
     return redirect("/login")
