@@ -41,6 +41,8 @@ body {
     opacity: 0.9;
 }
 
+
+
 .task-form {
     display: flex;
     gap: 10px;
@@ -96,4 +98,13 @@ body {
 .task-item input:checked + span {
     text-decoration: line-through;
     opacity: 0.5;
+}
+
+.export-btn {
+        background: #10b981;
+    color: white;
+    padding: 6px 12px;
+    border-radius: 8px;
+    text-decoration: none;
+    font-size: 14px;
 }

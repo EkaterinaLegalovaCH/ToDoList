@@ -3,6 +3,11 @@ import sqlite3
 import os
 from werkzeug.security import generate_password_hash, check_password_hash
 
+from flask import send_file
+from reportlab.platypus import SimpleDocTemplate, Paragraph
+from reportlab.lib.styles import getSampleStyleSheet
+import io
+
 BASE_DIR = os.path.abspath(os.path.dirname(__file__))
 DATABASE = os.path.join(BASE_DIR, "database", "tasks.db")
 
@@ -70,7 +75,8 @@ def home():
         return redirect("/")
 
     tasks = get_tasks(session["user_id"])
-    return render_template("home.html", tasks=tasks)
+    username = session["username"]
+    return render_template("home.html", tasks=tasks, username=username)
 
 
 @app.route("/register", methods=["GET", "POST"])
@@ -109,6 +115,7 @@ def login():
 
         if user and check_password_hash(user[2], password):
             session["user_id"] = user[0]
+            session["username"] = user[1]
             return redirect("/home")
 
     return render_template("login.html")
@@ -139,6 +146,35 @@ def delete(task_id):
 def update(task_id):
     toggle_task(task_id)
     return redirect("/")
+
+@app.route("/export/pdf")
+def export_pdf():
+    if "user_id" not in session:
+        return redirect("/")
+    tasks = get_tasks(session["user_id"])
+
+    buffer = io.BytesIO()
+    doc = SimpleDocTemplate(buffer)
+
+    styles = getSampleStyleSheet()
+    content = []
+
+    content.append(Paragraph("My Tasks", styles['Title']))
+
+    for task in tasks:
+        status = "✓" if task[2] else "☐"
+        text = f"{status} {task[1]}"
+        content.append(Paragraph(text, styles['Normal']))
+
+    doc.build(content)
+    buffer.seek(0)
+
+    return send_file(
+        buffer,
+        as_attachment=True,
+        download_name="tasks.pdf",
+        mimetype="application/pdf"
+    )
 
 if __name__ == "__main__":
     init_db()
