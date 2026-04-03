@@ -8,6 +8,9 @@ from reportlab.platypus import SimpleDocTemplate, Paragraph
 from reportlab.lib.styles import getSampleStyleSheet
 import io
 
+from openpyxl import Workbook
+
+
 BASE_DIR = os.path.abspath(os.path.dirname(__file__))
 DATABASE = os.path.join(BASE_DIR, "database", "tasks.db")
 
@@ -174,6 +177,34 @@ def export_pdf():
         as_attachment=True,
         download_name="tasks.pdf",
         mimetype="application/pdf"
+    )
+
+@app.route("/export/excell")
+def export_excell():
+    if "user_id" not in session:
+        return redirect("/")
+    tasks = get_tasks(session["user_id"])
+
+    # creates an excell file
+    wb = Workbook()
+    ws = wb.active
+    ws.title = "Tasks"
+
+    ws.append(["ID", "task", "completed"])
+
+    for task in tasks:
+        status = "Yes" if task[2] else "No"
+        ws.append([task[0], task[1], status])
+
+    buffer = io.BytesIO()
+    wb.save(buffer)
+    buffer.seek(0)
+
+    return send_file(
+        buffer,
+        as_attachment=True,
+        download_name="tasks.xlsx",
+        mimetype="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
     )
 
 if __name__ == "__main__":
