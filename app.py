@@ -9,6 +9,8 @@ from reportlab.lib.styles import getSampleStyleSheet
 import io
 
 from openpyxl import Workbook
+from openpyxl.styles import Font, PatternFill, Border, Side
+
 
 
 BASE_DIR = os.path.abspath(os.path.dirname(__file__))
@@ -189,12 +191,34 @@ def export_excell():
     wb = Workbook()
     ws = wb.active
     ws.title = "Tasks"
+    ws.column_dimensions["A"].width = 6
+    ws.column_dimensions["B"].width = 30
+    ws.column_dimensions["C"].width = 15
+
+    header_font = Font(bold=True, color="FFFFFF")
+    header_fill = PatternFill(start_color="4F46E5", end_color="4F46E5", fill_type="solid")
+
+    thin_border = Border(
+        left=Side(style="thin"),
+        right=Side(style="thin"),
+        top=Side(style="thin"),
+        bottom=Side(style="thin")
+    )
 
     ws.append(["ID", "task", "completed"])
 
-    for task in tasks:
+    for cell in ws[1]:
+        cell.font = header_font
+        cell.fill = header_fill
+        cell.border = thin_border
+
+    for row_index, task in enumerate(tasks, start=2):
         status = "Yes" if task[2] else "No"
         ws.append([task[0], task[1], status])
+
+        for col in range(1, 4):
+            cell = ws.cell(row=row_index, column=col)
+            cell.border = thin_border
 
     buffer = io.BytesIO()
     wb.save(buffer)
