@@ -4,7 +4,8 @@ import os
 from werkzeug.security import generate_password_hash, check_password_hash
 
 from flask import send_file
-from reportlab.platypus import SimpleDocTemplate, Paragraph
+from reportlab.platypus import SimpleDocTemplate, Table, TableStyle, Paragraph
+from reportlab.lib import colors
 from reportlab.lib.styles import getSampleStyleSheet
 import io
 
@@ -166,10 +167,21 @@ def export_pdf():
 
     content.append(Paragraph("My Tasks", styles['Title']))
 
+    data = [["ID", "task", "completed"]]
+
     for task in tasks:
-        status = "✓" if task[2] else "☐"
-        text = f"{status} {task[1]}"
-        content.append(Paragraph(text, styles['Normal']))
+        status = "Yes" if task[2] else "No"
+        data.append(Paragraph(task[0], task[1], status))
+
+    table = Table(data)
+
+    table.setStyle(TableStyle([
+        ("BACKGROUND", (0, 0), (-1, 0), colors.HexColor("#4F46E5")),
+        ("TEXTCOLOR", (0, 0), (-1, 0), colors.white),
+        ("ALIGN", (0, 0),)
+    ]))
+
+    content.append(table)
 
     doc.build(content)
     buffer.seek(0)

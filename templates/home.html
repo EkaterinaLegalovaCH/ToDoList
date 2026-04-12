@@ -12,18 +12,19 @@
     <link rel="stylesheet" href="{{url_for('static', filename='css/style.css')}}">
 </head>
 <body>
-    <div class="app">
-        <header class="header">
-            <h1>My Tasks</h1>
-
-            <span>Hello, {{ username }}!</span>
-
+    <header class="header">
+            <div class="logo">MyTasks</div>
+            
+            
             <form action="/logout" method="POST">
                 <button class="logout-btn">Logout</button>
             </form>
             <a href="/export/pdf" class="export-btn">Export PDF</a>
             <a href="/export/excell" class="export-btn">Export Excell</a>
-        </header>
+    </header>
+
+    <section class="app">
+
         <form method="POST" action="/add" id="task-form" class="task-form">
             <input
                 type="text"
@@ -64,6 +65,6 @@
 
         <script src="{{url_for('static', filename='js/main.js')}}"></script>
 
-    </div>
+    </section>
 </body>
 </html>

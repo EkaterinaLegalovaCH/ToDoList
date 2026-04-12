@@ -1,16 +1,14 @@
 * {
     box-sizing: border-box;
-    font-family: "Poppins", sans-serif;
     margin: 0;
     padding: 0;
 }
 
 body {
-    background: #f3f4f6;
-    display: flex;
-    justify-content: center;
-    margin-top: 60px;
+    font-family: "Poppins", sans-serif;
 }
+
+
 
 .app {
     width: 100%;
@@ -22,6 +20,7 @@ body {
 }
 
 .header {
+    max-width: 1100px;
     display: flex;
     justify-content: space-between;
     align-items: center;
